@@ -1,4 +1,4 @@
-import { Findr } from '.';
+import { Findr } from './Findr';
 
 function setupDom() {
   document.body.innerHTML =
@@ -16,7 +16,7 @@ describe('findrjs tests', () => {
   test('timeout', async () => {
     setupDom();
     try {
-      await Findr.ROOT.element('#yalla').eval();
+      await Findr.ROOT.setTimeout(1000).element('#yalla').eval();
       fail('should have thrown');
     } catch (err) {
       expect(err).toEqual('timed out');
