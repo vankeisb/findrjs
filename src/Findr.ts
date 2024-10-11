@@ -16,7 +16,7 @@ export class Findr {
     return new Findr(this.context, timeoutMs, this.items);
   }
 
-  element(selector: string): Findr {
+  $(selector: string): Findr {
     return new Findr(this.context, this.timeoutMs, [
       ...this.items,
       new ElemItem(selector),

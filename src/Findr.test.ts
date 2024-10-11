@@ -17,32 +17,32 @@ function assertTimeout(f: Findr) {
 describe('Findr tests', () => {
   test('simple dom', async () => {
     setupDom();
-    await Findr.ROOT.element('#username').eval();
+    await Findr.ROOT.$('#username').eval();
   });
   test('timeout', async () => {
     setupDom();
-    assertTimeout(Findr.ROOT.setTimeout(1000).element('#yalla'));
+    assertTimeout(Findr.ROOT.setTimeout(1000).$('#yalla'));
   });
   test('dom update async', async () => {
     document.body.innerHTML = '<div>yalla</div>';
     setTimeout(() => {
       setupDom();
     }, 3000);
-    await Findr.ROOT.element('#username').eval();
+    await Findr.ROOT.$('#username').eval();
   });
   test('multiple elements', async () => {
     setupDom();
-    await Findr.ROOT.element('.outer').element('button').eval();
+    await Findr.ROOT.$('.outer').$('button').eval();
   });
   test('multiple elements failed', async () => {
     setupDom();
-    assertTimeout(Findr.ROOT.element('.outer').element('svg'));
+    assertTimeout(Findr.ROOT.$('.outer').$('svg'));
   });
   test('multiple elements where ok', async () => {
     setupDom();
-    await Findr.ROOT.element('.outer')
+    await Findr.ROOT.$('.outer')
       .where((e) => e.classList.contains('outer'))
-      .element('button')
+      .$('button')
       .where((e) => e.id === 'doit')
       .eval();
   });
@@ -50,9 +50,9 @@ describe('Findr tests', () => {
     setupDom();
     assertTimeout(
       Findr.ROOT.setTimeout(1000)
-        .element('.outer')
+        .$('.outer')
         .where((e) => e.classList.contains('outer'))
-        .element('button')
+        .$('button')
         .where((e) => e.id === 'doit'),
     );
   });
