@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "inlineSources": true,
+      "inlineSourceMap": true,
+      "strict": true,
+      "module": "CommonJS",
+      "outDir": "build",
+      "declaration": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
+  }
+  
