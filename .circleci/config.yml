@@ -1,0 +1,49 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.2
+
+jobs:
+  build_and_test:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: npm run compile
+          name: Compile
+      - run:
+          command: npm run test
+          name: Test
+      - run:
+          command: npm run bundle
+          name: Bundle
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+  docs_deploy:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Add github.com to known hosts
+          command: mkdir ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run: git config user.email "remi@rvkb.com"
+      - run: git config user.name "Rémi Van Keisbelck"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: npm run gh-pages            
+
+workflows:
+  build:
+    jobs:
+      - build_and_test
+      - docs_deploy:
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              only: main
