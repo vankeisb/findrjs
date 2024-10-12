@@ -63,7 +63,7 @@ workflows:
             tags:
               only: /v\d+\.\d+\.\d+/
             branches:
-              only: /main/      
+              ignore: /.*/      
       - deploy:
           requires:
             - build_and_test
@@ -71,5 +71,5 @@ workflows:
             tags:
               only: /v\d+\.\d+\.\d+/
             branches:
-              only: /main/
+              ignore: /.*/
 
