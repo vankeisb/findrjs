@@ -23,6 +23,18 @@ jobs:
           paths:
             - .
 
+  deploy:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+      - run: 
+          name: Deploy to npm
+          command: npm publish
+
   docs_deploy:
     executor: node/default
     steps:
@@ -47,3 +59,10 @@ workflows:
           filters:
             branches:
               only: main
+      - deploy:
+          requires:
+            - build_and_test
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+
