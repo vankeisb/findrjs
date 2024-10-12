@@ -1,7 +1,7 @@
 import { ElemItem } from './ElemItem';
 import type { FindrItem } from './FindrItem';
 import { ListFindr } from './ListFindr';
-import { LOG, Logger } from './Logger';
+import { LOG } from './Logger';
 import type { SinglePredicate } from './SinglePredicate';
 import { WhereItem } from './WhereItem';
 
@@ -62,8 +62,8 @@ export class Findr {
     return context;
   }
 
-  async eval(): Promise<any> {
-    return this.evalWithResult((e) => true);
+  async eval(): Promise<void> {
+    return this.evalWithResult(() => true).then(() => {});
   }
 
   async evalWithResult<T>(f: (e: Element) => T | null): Promise<T> {

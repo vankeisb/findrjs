@@ -1,7 +1,6 @@
 import { Findr } from './Findr';
 import { LOG } from './Logger';
 import type { SinglePredicate } from './SinglePredicate';
-import { WhereItem } from './WhereItem';
 
 export class ListFindr {
   static newInstance(findr: Findr, selector: string): ListFindr {
@@ -78,8 +77,8 @@ export class ListFindr {
     return elems;
   }
 
-  async eval(): Promise<any> {
-    return this.evalWithResult((e) => true);
+  async eval(): Promise<void> {
+    return this.evalWithResult(() => true).then(() => {});
   }
 
   async evalWithResult<T>(f: (e: readonly Element[]) => T | null): Promise<T> {
