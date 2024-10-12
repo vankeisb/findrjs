@@ -52,4 +52,8 @@ describe('Findr tests', () => {
     const barText = await $('.outer .bar').evalWithResult((e) => e.textContent);
     expect(barText).toEqual('tower');
   });
+  test('eval await style', async () => {
+    setupDom();
+    return await $('.outer').eval();
+  });
 });
