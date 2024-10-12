@@ -11,6 +11,37 @@ export class ListFindr {
     return new ListFindr(this.findr, this.selector, expected);
   }
 
+  at(index: number): Findr {
+    return new Findr(
+      () => {
+        const elems = this.evalSync();
+        if (elems === null) {
+          return null;
+        } else {
+          if (index > elems.length - 1) {
+            return null;
+          } else {
+            return elems.item(index);
+          }
+        }
+      },
+      this.findr.getTimeout(),
+      [],
+    );
+  }
+
+  private evalSync(): NodeListOf<Element> | null {
+    const findrElem = this.findr.evalSync();
+    if (findrElem === null) {
+      return null;
+    }
+    const elems = findrElem.querySelectorAll(this.selector);
+    if (this._count !== -1 && this._count !== elems.length) {
+      return null;
+    }
+    return elems;
+  }
+
   async eval(): Promise<any> {
     return this.evalWithResult((e) => true);
   }
@@ -21,28 +52,17 @@ export class ListFindr {
       const doEval = () => {
         const elapsed = new Date().getTime() - startTime;
         if (elapsed > this.findr.getTimeout()) {
-          reject('timed out');
+          reject();
         } else {
-          const findrElem = this.findr.evalSync();
-          if (findrElem === null) {
-            //console.log('parent findr didn not return element');
-            setTimeout(doEval, 100); // TODO configure
+          const elems = this.evalSync();
+          if (elems === null) {
+            reject();
           } else {
-            const elems = findrElem.querySelectorAll(this.selector);
-            if (this._count !== -1 && this._count !== elems.length) {
-              reject(
-                'invalid count, expected ' +
-                  this._count +
-                  ', got ' +
-                  elems.length,
-              );
+            const res = f(elems);
+            if (res === null) {
+              setTimeout(doEval, 100); // TODO configure
             } else {
-              const res = f(elems);
-              if (res === null) {
-                setTimeout(doEval, 100); // TODO configure
-              } else {
-                resolve(res);
-              }
+              resolve(res);
             }
           }
         }

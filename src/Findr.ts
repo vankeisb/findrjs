@@ -7,8 +7,8 @@ import { WhereItem } from './WhereItem';
 export class Findr {
   static ROOT = new Findr(() => document.documentElement, 5000, []);
 
-  private constructor(
-    private readonly context: () => Element,
+  constructor(
+    private readonly context: () => Element | null,
     private readonly timeoutMs: number,
     private readonly items: readonly FindrItem[],
   ) {}
@@ -41,6 +41,9 @@ export class Findr {
 
   evalSync(): Element | null {
     let context: Element | null = this.context();
+    if (context === null) {
+      return null;
+    }
     for (let item of this.items) {
       context = item.execute(context);
       if (context === null) {
@@ -62,26 +65,30 @@ export class Findr {
       const doEval = () => {
         const elapsed = new Date().getTime() - startTime;
         if (elapsed > this.timeoutMs) {
-          reject('timed out');
+          reject();
         } else {
           let context: Element | null = this.context();
-          for (let item of this.items) {
-            context = item.execute(context);
-            if (context === null) {
-              //console.log('stopped while searching, item', item);
-              break;
-            }
-          }
           if (context === null) {
-            //console.log('retrying');
             setTimeout(doEval, 100); // TODO configure
           } else {
-            const res = f(context);
-            if (res === null) {
-              //console.log('retrying (eval callback failed)');
+            for (let item of this.items) {
+              context = item.execute(context);
+              if (context === null) {
+                //console.log('stopped while searching, item', item);
+                break;
+              }
+            }
+            if (context === null) {
+              //console.log('retrying');
               setTimeout(doEval, 100); // TODO configure
             } else {
-              resolve(res);
+              const res = f(context);
+              if (res === null) {
+                //console.log('retrying (eval callback failed)');
+                setTimeout(doEval, 100); // TODO configure
+              } else {
+                resolve(res);
+              }
             }
           }
         }
