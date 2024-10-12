@@ -14,6 +14,10 @@ export class Findr {
     private readonly items: readonly FindrItem[],
   ) {}
 
+  static enableLogging(enabled: boolean) {
+    LOG.enabled = enabled;
+  }
+
   setTimeout(timeoutMs: number): Findr {
     return new Findr(this.context, timeoutMs, this.items);
   }
@@ -87,12 +91,12 @@ export class Findr {
               }
             }
             if (context === null) {
-              LOG.warn('retrying eval...');
+              LOG.warn('no elem, retrying eval...');
               setTimeout(doEval, 100); // TODO configure
             } else {
               const res = f(context);
               if (res === null) {
-                LOG.warn('retrying eval (callback failed)...');
+                LOG.warn('callback returned null, retrying eval...');
                 setTimeout(doEval, 100); // TODO configure
               } else {
                 LOG.success('eval success, resolving');

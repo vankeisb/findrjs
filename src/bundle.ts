@@ -1,10 +1,18 @@
 import * as findr from './index';
 
-// @ts-ignore
-window['findr'] = findr;
-// @ts-ignore
-window['$'] = findr.Findr.ROOT.$;
-// @ts-ignore
-window['$$'] = findr.Findr.ROOT.$$;
+const root = findr.Findr.ROOT;
 
-console.log('Findr lib loaded : findr, $, and $$ are available');
+// @ts-ignore
+window['findr'] = {
+  root,
+  $: root.$.bind(root),
+  $$: root.$$.bind(root),
+  enableLogging: findr.Findr.enableLogging,
+};
+
+console.log(`
+ ┏┓•   ┓  
+ ┣ ┓┏┓┏┫┏┓
+ ┻ ┗┛┗┗┻┛     
+ lib loaded ! findr is available
+`);

@@ -9,19 +9,19 @@ export class Logger {
 
   warn(message: string): void {
     if (this.enabled) {
-      console.log('%c ' + message, 'color: orange;');
+      console.log('%c' + message, 'color: orange;');
     }
   }
 
   success(message: string): void {
     if (this.enabled) {
-      console.log('%c ' + message, 'color: green;');
+      console.log('%c' + message, 'color: green;');
     }
   }
 
   error(message: string): void {
     if (this.enabled) {
-      console.log('%c ' + message, 'color: red;');
+      console.log('%c' + message, 'color: red;');
     }
   }
 }
