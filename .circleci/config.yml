@@ -11,13 +11,13 @@ jobs:
           pkg-manager: npm
       - run:
           command: npm run compile
-          name: Run tests
+          name: Compile
       - run:
           command: npm run test
-          name: Run tests
+          name: Test
       - run:
           command: npm run bundle
-          name: Build app
+          name: Bundle
       - persist_to_workspace:
           root: ~/project
           paths:
