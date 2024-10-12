@@ -1,5 +1,5 @@
 import { FindrItem } from './FindrItem';
-import { SinglePredicate } from './SinglePredicate';
+import type { SinglePredicate } from './SinglePredicate';
 
 export class WhereItem extends FindrItem {
   constructor(readonly where: SinglePredicate) {

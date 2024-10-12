@@ -1,8 +1,8 @@
 import { ElemItem } from './ElemItem';
-import { FindrItem } from './FindrItem';
+import type { FindrItem } from './FindrItem';
 import { ListFindr } from './ListFindr';
 import { LOG, Logger } from './Logger';
-import { SinglePredicate } from './SinglePredicate';
+import type { SinglePredicate } from './SinglePredicate';
 import { WhereItem } from './WhereItem';
 
 export class Findr {
@@ -50,7 +50,7 @@ export class Findr {
       LOG.warn('> parent context returned null');
       return null;
     }
-    for (let item of this.items) {
+    for (const item of this.items) {
       context = item.execute(context);
       if (context === null) {
         LOG.warn('> failed : ' + item.describe());
@@ -81,7 +81,7 @@ export class Findr {
             LOG.warn('retrying eval...');
             setTimeout(doEval, 100); // TODO configure
           } else {
-            for (let item of this.items) {
+            for (const item of this.items) {
               context = item.execute(context);
               if (context === null) {
                 LOG.warn('> failed : ' + item.describe());

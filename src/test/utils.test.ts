@@ -1,5 +1,5 @@
 import { Findr } from '../Findr';
-import { ListFindr } from '../ListFindr';
+import type { ListFindr } from '../ListFindr';
 
 export function assertEval(done: jest.DoneCallback, f: Findr | ListFindr) {
   f.eval()

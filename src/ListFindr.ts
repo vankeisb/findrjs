@@ -1,6 +1,6 @@
 import { Findr } from './Findr';
 import { LOG } from './Logger';
-import { SinglePredicate } from './SinglePredicate';
+import type { SinglePredicate } from './SinglePredicate';
 import { WhereItem } from './WhereItem';
 
 export class ListFindr {
@@ -60,7 +60,7 @@ export class ListFindr {
     }
     const elems = Array.from(findrElem.querySelectorAll(this.selector)).filter(
       (e) => {
-        for (let p of this.whereItems) {
+        for (const p of this.whereItems) {
           if (!p(e)) {
             LOG.warn('> failed : ' + (p.description ?? ' (no description)'));
             return false;
