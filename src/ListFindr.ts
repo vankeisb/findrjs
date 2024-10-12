@@ -1,14 +1,21 @@
 import { Findr } from './Findr';
+import { SinglePredicate } from './SinglePredicate';
+import { WhereItem } from './WhereItem';
 
 export class ListFindr {
-  constructor(
+  static newInstance(findr: Findr, selector: string): ListFindr {
+    return new ListFindr(findr, selector, -1, []);
+  }
+
+  private constructor(
     private readonly findr: Findr,
     private readonly selector: string,
-    private readonly _count: number = -1,
+    private readonly _count: number,
+    private readonly whereItems: readonly SinglePredicate[],
   ) {}
 
   count(expected: number): ListFindr {
-    return new ListFindr(this.findr, this.selector, expected);
+    return new ListFindr(this.findr, this.selector, expected, this.whereItems);
   }
 
   at(index: number): Findr {
@@ -21,7 +28,7 @@ export class ListFindr {
           if (index > elems.length - 1) {
             return null;
           } else {
-            return elems.item(index);
+            return elems[index];
           }
         }
       },
@@ -30,12 +37,32 @@ export class ListFindr {
     );
   }
 
-  private evalSync(): NodeListOf<Element> | null {
+  where(p: SinglePredicate): ListFindr {
+    return new ListFindr(this.findr, this.selector, this._count, [
+      ...this.whereItems,
+      p,
+    ]);
+  }
+
+  expectOne(): Findr {
+    return this.count(1).at(0);
+  }
+
+  private evalSync(): readonly Element[] | null {
     const findrElem = this.findr.evalSync();
     if (findrElem === null) {
       return null;
     }
-    const elems = findrElem.querySelectorAll(this.selector);
+    const elems = Array.from(findrElem.querySelectorAll(this.selector)).filter(
+      (e) => {
+        for (let p of this.whereItems) {
+          if (!p(e)) {
+            return false;
+          }
+        }
+        return true;
+      },
+    );
     if (this._count !== -1 && this._count !== elems.length) {
       return null;
     }
@@ -46,7 +73,7 @@ export class ListFindr {
     return this.evalWithResult((e) => true);
   }
 
-  async evalWithResult<T>(f: (e: NodeListOf<Element>) => T | null): Promise<T> {
+  async evalWithResult<T>(f: (e: readonly Element[]) => T | null): Promise<T> {
     const startTime = new Date().getTime();
     return new Promise<T>((resolve, reject) => {
       const doEval = () => {
@@ -56,7 +83,7 @@ export class ListFindr {
         } else {
           const elems = this.evalSync();
           if (elems === null) {
-            reject();
+            setTimeout(doEval, 100); // TODO configure
           } else {
             const res = f(elems);
             if (res === null) {

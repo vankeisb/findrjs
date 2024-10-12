@@ -47,4 +47,9 @@ describe('Findr tests', () => {
         }),
     );
   });
+  test('map to elem prop', async () => {
+    setupDom();
+    const barText = await $('.outer .bar').evalWithResult((e) => e.textContent);
+    expect(barText).toEqual('tower');
+  });
 });

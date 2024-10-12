@@ -29,7 +29,7 @@ export class Findr {
   }
 
   $$(selector: string): ListFindr {
-    return new ListFindr(this, selector);
+    return ListFindr.newInstance(this, selector);
   }
 
   where(f: SinglePredicate): Findr {

@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-      "target": "es6",
+      "target": "es2017",
       "inlineSources": true,
       "inlineSourceMap": true,
       "strict": true,
-      "module": "CommonJS",
+      "module": "esnext",
       "outDir": "build",
       "declaration": true,
       "skipLibCheck": true,
