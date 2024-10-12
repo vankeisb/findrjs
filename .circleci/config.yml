@@ -30,7 +30,7 @@ jobs:
           at: ~/project
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/project/.npmrc
       - run: 
           name: Deploy to npm
           command: npm publish
@@ -65,4 +65,6 @@ workflows:
           filters:
             tags:
               only: /v\d+\.\d+\.\d+/
+            branches:
+              ignore: /.*/
 
