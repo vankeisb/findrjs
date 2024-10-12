@@ -56,4 +56,24 @@ describe('Findr tests', () => {
     setupDom();
     return await $('.outer').eval();
   });
+  test('exception in where', (done) => {
+    assertTimeout(
+      done,
+      $('.outer').where(() => {
+        throw 'yalla';
+      }),
+    );
+  });
+  test('exception in evalWithResult', (done) => {
+    $('.outer')
+      .evalWithResult(() => {
+        throw 'yalla';
+      })
+      .then(() => {
+        done('should have timed out');
+      })
+      .catch(() => {
+        done();
+      });
+  });
 });
