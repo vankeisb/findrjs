@@ -31,8 +31,8 @@ jobs:
       - run:
           name: Add github.com to known hosts
           command: mkdir ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-      # - run: git config user.email "vankeisb-ci@rvkb.com"
-      # - run: git config user.name "vankeisb-ci"
+      - run: git config user.email "remi@rvkb.com"
+      - run: git config user.name "Rémi Van Keisbelck"
       - run:
           name: Deploy docs to gh-pages branch
           command: npm run gh-pages            
