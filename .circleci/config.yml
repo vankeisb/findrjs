@@ -55,7 +55,9 @@ workflows:
       - build_and_test:
           filters:
             branches:
-              ignore: /gh-pages/      
+              ignore: /gh-pages/   
+            tags:
+              only: /v\d+\.\d+\.\d+/
       - docs_deploy:
           requires:
             - build_and_test
