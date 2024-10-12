@@ -52,13 +52,18 @@ jobs:
 workflows:
   build:
     jobs:
-      - build_and_test
+      - build_and_test:
+          filters:
+            branches:
+              ignore: /gh-pages/      
       - docs_deploy:
           requires:
             - build_and_test
           filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
             branches:
-              only: main
+              ignore: /.*/      
       - deploy:
           requires:
             - build_and_test
