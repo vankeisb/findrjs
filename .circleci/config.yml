@@ -52,10 +52,7 @@ jobs:
 workflows:
   build:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-              ignore: /gh-pages/      
+      - build_and_test
       - docs_deploy:
           requires:
             - build_and_test
