@@ -1,59 +1,50 @@
 import { Findr } from './Findr';
-
-function setupDom() {
-  document.body.innerHTML =
-    '<div class="outer">' +
-    '  <span id="username" />' +
-    '  <button id="doit" />' +
-    '</div>';
-}
-
-function assertTimeout(f: Findr) {
-  f.eval()
-    .then(() => fail('should have thrown'))
-    .catch((err) => expect(err).toEqual('timed out'));
-}
+import { $, assertEval, assertTimeout, setupDom } from './test/utils.test';
 
 describe('Findr tests', () => {
-  test('simple dom', async () => {
+  test('simple dom', (done) => {
     setupDom();
-    await Findr.ROOT.$('#username').eval();
+    assertEval(done, $('#username'));
   });
-  test('timeout', async () => {
+  test('timeout', (done) => {
     setupDom();
-    assertTimeout(Findr.ROOT.setTimeout(1000).$('#yalla'));
+    assertTimeout(done, $('#yalla'));
   });
-  test('dom update async', async () => {
+  test('dom update async', (done) => {
     document.body.innerHTML = '<div>yalla</div>';
     setTimeout(() => {
       setupDom();
     }, 3000);
-    await Findr.ROOT.$('#username').eval();
+    assertEval(done, Findr.ROOT.$('#username'));
   });
-  test('multiple elements', async () => {
+  test('multiple elements', (done) => {
     setupDom();
-    await Findr.ROOT.$('.outer').$('button').eval();
+    assertEval(done, $('.outer').$('button'));
   });
-  test('multiple elements failed', async () => {
+  test('multiple elements failed', (done) => {
     setupDom();
-    assertTimeout(Findr.ROOT.$('.outer').$('svg'));
+    assertTimeout(done, $('.outer').$('svg'));
   });
-  test('multiple elements where ok', async () => {
+  test('multiple elements where ok', (done) => {
     setupDom();
-    await Findr.ROOT.$('.outer')
-      .where((e) => e.classList.contains('outer'))
-      .$('button')
-      .where((e) => e.id === 'doit')
-      .eval();
-  });
-  test('multiple elements where failed', async () => {
-    setupDom();
-    assertTimeout(
-      Findr.ROOT.setTimeout(1000)
-        .$('.outer')
+    assertEval(
+      done,
+      $('.outer')
         .where((e) => e.classList.contains('outer'))
         .$('button')
         .where((e) => e.id === 'doit'),
+    );
+  });
+  test('multiple elements where failed', (done) => {
+    setupDom();
+    assertTimeout(
+      done,
+      $('.outer')
+        .where((e) => e.classList.contains('outer'))
+        .$('button')
+        .where((e) => {
+          return e.id === 'yalla';
+        }),
     );
   });
 });
