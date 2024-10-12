@@ -24,7 +24,7 @@ jobs:
             - .
 
 workflows:
-  test_my_app:
+  build:
     jobs:
       - build_and_test
       # - deploy:
