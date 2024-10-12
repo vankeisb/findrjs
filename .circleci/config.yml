@@ -24,6 +24,7 @@ jobs:
             - .
 
   docs_deploy:
+    executor: node/default
     steps:
       - attach_workspace:
           at: ~/repo
