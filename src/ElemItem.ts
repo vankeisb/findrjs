@@ -8,4 +8,8 @@ export class ElemItem extends FindrItem {
   execute(context: Element): Element | null {
     return context.querySelector(this.selector);
   }
+
+  describe(): string {
+    return this.selector;
+  }
 }

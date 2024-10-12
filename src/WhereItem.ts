@@ -13,4 +13,9 @@ export class WhereItem extends FindrItem {
       return null;
     }
   }
+
+  describe(): string {
+    const desc = this.where.description ?? 'no description available';
+    return 'where : ' + desc;
+  }
 }

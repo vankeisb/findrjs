@@ -79,7 +79,7 @@ export class ListFindr {
       const doEval = () => {
         const elapsed = new Date().getTime() - startTime;
         if (elapsed > this.findr.getTimeout()) {
-          reject();
+          reject('timed out');
         } else {
           const elems = this.evalSync();
           if (elems === null) {

@@ -1,6 +1,7 @@
 import { ElemItem } from './ElemItem';
 import { FindrItem } from './FindrItem';
 import { ListFindr } from './ListFindr';
+import { LOG, Logger } from './Logger';
 import { SinglePredicate } from './SinglePredicate';
 import { WhereItem } from './WhereItem';
 
@@ -42,13 +43,16 @@ export class Findr {
   evalSync(): Element | null {
     let context: Element | null = this.context();
     if (context === null) {
+      LOG.warn('> parent context returned null');
       return null;
     }
     for (let item of this.items) {
       context = item.execute(context);
       if (context === null) {
-        // console.log('stopped while searching, item', item);
+        LOG.warn('> failed : ' + item.describe());
         break;
+      } else {
+        LOG.success('> ok : ' + item.describe());
       }
     }
     return context;
@@ -59,34 +63,39 @@ export class Findr {
   }
 
   async evalWithResult<T>(f: (e: Element) => T | null): Promise<T> {
-    //console.log('eval');
     const startTime = new Date().getTime();
+    LOG.info('eval starting at ' + startTime);
     return new Promise<T>((resolve, reject) => {
       const doEval = () => {
         const elapsed = new Date().getTime() - startTime;
         if (elapsed > this.timeoutMs) {
-          reject();
+          LOG.error('timed out');
+          reject('timed out');
         } else {
           let context: Element | null = this.context();
           if (context === null) {
+            LOG.warn('retrying eval...');
             setTimeout(doEval, 100); // TODO configure
           } else {
             for (let item of this.items) {
               context = item.execute(context);
               if (context === null) {
-                //console.log('stopped while searching, item', item);
+                LOG.warn('> failed : ' + item.describe());
                 break;
+              } else {
+                LOG.success('> ok : ' + item.describe());
               }
             }
             if (context === null) {
-              //console.log('retrying');
+              LOG.warn('retrying eval...');
               setTimeout(doEval, 100); // TODO configure
             } else {
               const res = f(context);
               if (res === null) {
-                //console.log('retrying (eval callback failed)');
+                LOG.warn('retrying eval (callback failed)...');
                 setTimeout(doEval, 100); // TODO configure
               } else {
+                LOG.success('eval success, resolving');
                 resolve(res);
               }
             }
