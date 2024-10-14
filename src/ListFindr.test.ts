@@ -1,4 +1,5 @@
 import { Findr } from './Findr';
+import { hasClass, id, textEquals } from './SinglePredicate';
 import { $, $$, assertEval, setupDom, assertTimeout } from './test/utils.test';
 
 describe('ListFindr tests', () => {
@@ -16,12 +17,7 @@ describe('ListFindr tests', () => {
   });
   test('at', (done) => {
     setupDom();
-    assertEval(
-      done,
-      $$('span')
-        .at(1)
-        .where((e) => e.id === 'password'),
-    );
+    assertEval(done, $$('span').at(1).where(id('password')));
   }, 60000);
   test('at failed', (done) => {
     setupDom();
@@ -37,43 +33,29 @@ describe('ListFindr tests', () => {
         .at(0)
         .$$('.bar')
         .at(2)
-        .where((e) => e.textContent === 'power'),
+        .where(textEquals('power')),
     );
   });
   test('where', (done) => {
     setupDom();
-    assertEval(
-      done,
-      $('.outer')
-        .$$('.bar')
-        .where((e) => e.textContent === 'of')
-        .count(1),
-    );
+    assertEval(done, $('.outer').$$('.bar').where(textEquals('of')).count(1));
   });
   test('where timeout', (done) => {
     setupDom();
     assertTimeout(
       done,
-      $('.outer')
-        .$$('.bar')
-        .where((e) => e.textContent === 'yalla')
-        .count(1),
+      $('.outer').$$('.bar').where(textEquals('yalla')).count(1),
     );
   });
   test('where no count', (done) => {
     setupDom();
-    assertEval(
-      done,
-      $('.outer')
-        .$$('.bar')
-        .where((e) => e.textContent === 'yalla'),
-    );
+    assertEval(done, $('.outer').$$('.bar').where(textEquals('yalla')));
   });
   test('where with result', async () => {
     setupDom();
     const textContent = await $('.outer')
       .$$('div')
-      .where((e) => e.textContent === 'tower')
+      .where(textEquals('tower'))
       .count(1)
       .at(0)
       .evalWithResult((e) => e.textContent);
@@ -100,10 +82,10 @@ describe('ListFindr tests', () => {
     Findr.ROOT.setTimeout(5000)
       .$('.outer')
       .$$('div')
-      .where((e) => e.classList.contains('bar'))
+      .where(hasClass('bar'))
       .count(3)
       .at(0)
-      .where((e) => e.textContent === 'tower')
+      .where(textEquals('tower'))
       .eval()
       .then(() => {
         done();
@@ -117,10 +99,10 @@ describe('ListFindr tests', () => {
     setTimeout(setupDom, 3000);
     Findr.ROOT.setTimeout(5000)
       .$$('div')
-      .where((e) => e.classList.contains('bar'))
+      .where(hasClass('bar'))
       .count(3)
       .at(0)
-      .where((e) => e.textContent === 'tower')
+      .where(textEquals('tower'))
       .eval()
       .then(() => {
         done();

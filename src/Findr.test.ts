@@ -1,4 +1,5 @@
 import { Findr } from './Findr';
+import { hasClass, id } from './SinglePredicate';
 import { $, assertEval, assertTimeout, setupDom } from './test/utils.test';
 
 describe('Findr tests', () => {
@@ -29,22 +30,14 @@ describe('Findr tests', () => {
     setupDom();
     assertEval(
       done,
-      $('.outer')
-        .where((e) => e.classList.contains('outer'))
-        .$('button')
-        .where((e) => e.id === 'doit'),
+      $('.outer').where(hasClass('outer')).$('button').where(id('doit')),
     );
   });
   test('multiple elements where failed', (done) => {
     setupDom();
     assertTimeout(
       done,
-      $('.outer')
-        .where((e) => e.classList.contains('outer'))
-        .$('button')
-        .where((e) => {
-          return e.id === 'yalla';
-        }),
+      $('.outer').where(hasClass('outer')).$('button').where(id('yalla')),
     );
   });
   test('map to elem prop', async () => {
